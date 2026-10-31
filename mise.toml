@@ -104,6 +104,18 @@ run = "python scripts/integration_test_github.py --verify-update --repo-prefix d
 # stopped partway, after listing them and asking.
 run = "python scripts/integration_test_github.py --cleanup --repo-prefix docker-container-template"
 
+[tasks.integration-test-docker]
+# Verifies the Docker workflows on main before a release. Creates a Standard test repo
+# from this template, publishes its CI and release images, and runs the release image.
+# The repo and package stay for inspection; delete them with
+# `mise run integration-test-docker-cleanup`.
+run = "python scripts/integration_test_docker.py --source https://github.com/postmodern-templates/docker-container-template --repo-prefix docker-container-template"
+
+[tasks.integration-test-docker-cleanup]
+# Deletes every repo and package integration-test-docker created, including those of a
+# run that stopped partway, after listing them and asking.
+run = "python scripts/integration_test_docker.py --cleanup --repo-prefix docker-container-template"
+
 [tasks.integration-test-azdo]
 # Verifies a release candidate on main before a release. Creates two test repos from
 # this template and runs every automated check against Repo A, a copy at HEAD. Repo B

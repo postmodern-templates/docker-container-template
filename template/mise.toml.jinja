@@ -132,6 +132,18 @@ run = "python scripts/integration_test_github.py --verify-update --repo-prefix {
 # stopped partway, after listing them and asking.
 run = "python scripts/integration_test_github.py --cleanup --repo-prefix {{ repo_name }}"
 
+[tasks.integration-test-docker]
+# Verifies the Docker workflows on main before a release. Creates a Standard test repo
+# from this template, publishes its CI and release images, and runs the release image.
+# The repo and package stay for inspection; delete them with
+# `mise run integration-test-docker-cleanup`.
+run = "python scripts/integration_test_docker.py --source {% if using_github %}https://github.com/{{ github_repo_owner }}/{{ repo_name }}{% elif using_azdo %}git+https://dev.azure.com/{{ azdo_org }}/{{ azdo_project_encoded }}/_git/{{ repo_name }}{% endif %} --repo-prefix {{ repo_name }}{% if not is_extensible %} --leaf{% endif %}"
+
+[tasks.integration-test-docker-cleanup]
+# Deletes every repo and package integration-test-docker created, including those of a
+# run that stopped partway, after listing them and asking.
+run = "python scripts/integration_test_docker.py --cleanup --repo-prefix {{ repo_name }}{% if not is_extensible %} --leaf{% endif %}"
+
 [tasks.integration-test-azdo]
 {%- set org_default = azdo_org if using_azdo else '' %}
 {%- set project_default = azdo_project if using_azdo else '' %}
