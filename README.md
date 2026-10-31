@@ -17,16 +17,10 @@
   </p>
 </div>
 
-<p align="center">
-  <img src="docs/assets/images/readme-screenshot.png" alt="Screenshot">
-</p>
-
 <!-- Don't edit/remove this yourself! This is managed by the 'lifecycle' Copier answer. -->
 
 | :exclamation: Notice: This project is in a Pre-Alpha state and is not ready for public use. |
 | ------------------------------------------------------------------------------------ |
-
-A Copier template to build and publish a Docker container with the Hard/Boring stuff automated, so you can get back to coding.
 
 ## What kind of repo does it make?
 
