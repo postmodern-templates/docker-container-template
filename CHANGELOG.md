@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.2.0 (2026-10-31)
+
+### Breaking Changes
+
+#### Update to parent template 0.8.2
+
+Replaces Trunk, release-please, and the Invoke tasks with mise, prek, and Knope, and restructures the workflows and docs. See the [parent's upgrade guide](https://postmodern-templates.github.io/repo-template/latest/maintaining/upgrading-from-0x/).
+
+### Features
+
+- port the Docker workflows to the current template
+
 ## 0.1.12 (2025-01-10)
 
 
