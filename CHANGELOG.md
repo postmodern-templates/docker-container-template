@@ -1,13 +1,13 @@
 # Changelog
 
-## [0.1.12](https://github.com/natescherer/postmodern-docker-container-copiertemplate/compare/v0.1.11...v0.1.12) (2025-01-10)
+## 0.1.12 (2025-01-10)
 
 
 ### Bug Fixes
 
 * Fix GID reporting in entrypoint ([e1a6789](https://github.com/natescherer/postmodern-docker-container-copiertemplate/commit/e1a678979bc36b8e5f3fe2033cd0f31e345b7f7d))
 
-## [0.1.11](https://github.com/natescherer/postmodern-docker-container-copiertemplate/compare/v0.1.10...v0.1.11) (2025-01-10)
+## 0.1.11 (2025-01-10)
 
 
 ### Features
@@ -21,7 +21,7 @@
 
 * Fix typo ([a13a3e9](https://github.com/natescherer/postmodern-docker-container-copiertemplate/commit/a13a3e95b83216cf9cbf09279117daeb6e158593))
 
-## [0.1.10](https://github.com/natescherer/postmodern-docker-container-copiertemplate/compare/v0.1.9...v0.1.10) (2025-01-09)
+## 0.1.10 (2025-01-09)
 
 
 ### Features
@@ -33,35 +33,35 @@
 
 * **deps:** Pin ubuntu docker tag to 80dd3c3 ([04b213f](https://github.com/natescherer/postmodern-docker-container-copiertemplate/commit/04b213f743792e9fb85801d1cac21b5e588085bc))
 
-## [0.1.9](https://github.com/natescherer/postmodern-docker-container-copiertemplate/compare/v0.1.8...v0.1.9) (2025-01-09)
+## 0.1.9 (2025-01-09)
 
 
 ### Features
 
 * Update workflows to remove extraneous builds ([46adeda](https://github.com/natescherer/postmodern-docker-container-copiertemplate/commit/46adedab057f923cceff2e6f06c7c05c2efc8f40))
 
-## [0.1.8](https://github.com/natescherer/postmodern-docker-container-copiertemplate/compare/v0.1.7...v0.1.8) (2024-12-31)
+## 0.1.8 (2024-12-31)
 
 
 ### Features
 
 * Add 'chore' commit type to changelog so renovate updates will track for containers ([6aeb319](https://github.com/natescherer/postmodern-docker-container-copiertemplate/commit/6aeb319e7f2554f8e5075ebeb4c58b731d58191d))
 
-## [0.1.7](https://github.com/natescherer/postmodern-docker-container-copiertemplate/compare/v0.1.6...v0.1.7) (2024-12-31)
+## 0.1.7 (2024-12-31)
 
 
 ### Features
 
 * Add ci builds ([449f7f4](https://github.com/natescherer/postmodern-docker-container-copiertemplate/commit/449f7f4d94d1efbefeb40aab15b737ce80a8a8c1))
 
-## [0.1.6](https://github.com/natescherer/postmodern-docker-container-copiertemplate/compare/v0.1.5...v0.1.6) (2024-12-31)
+## 0.1.6 (2024-12-31)
 
 
 ### Bug Fixes
 
 * Fix sample cmd in dockerfile ([21dcf2b](https://github.com/natescherer/postmodern-docker-container-copiertemplate/commit/21dcf2b248087d13ea9d7e9f63aef5b3f78b810b))
 
-## [0.1.5](https://github.com/natescherer/postmodern-docker-container-copiertemplate/compare/v0.1.4...v0.1.5) (2024-12-31)
+## 0.1.5 (2024-12-31)
 
 
 ### Bug Fixes
@@ -70,35 +70,35 @@
 * Switch versioning scheme for ubuntu packages ([775a732](https://github.com/natescherer/postmodern-docker-container-copiertemplate/commit/775a7322589c298132f5a060aa2f0823b0d8c3d9))
 * Update dockerfile custom manager for renovate ([a5f41ae](https://github.com/natescherer/postmodern-docker-container-copiertemplate/commit/a5f41ae4bc74e0ab0e6fea1227718c8a6ec3bcac))
 
-## [0.1.4](https://github.com/natescherer/postmodern-docker-container-copiertemplate/compare/v0.1.3...v0.1.4) (2024-12-31)
+## 0.1.4 (2024-12-31)
 
 
 ### Features
 
 * Apply parent template v0.3.19 ([ead3320](https://github.com/natescherer/postmodern-docker-container-copiertemplate/commit/ead332002bf5c02746992ceeeaf748776bdbf1e4))
 
-## [0.1.3](https://github.com/natescherer/postmodern-docker-container-copiertemplate/compare/v0.1.2...v0.1.3) (2024-12-31)
+## 0.1.3 (2024-12-31)
 
 
 ### Bug Fixes
 
 * Quote tag match for docker push workflow ([b65f43c](https://github.com/natescherer/postmodern-docker-container-copiertemplate/commit/b65f43c16d54754c7797b2d473614c85c6104097))
 
-## [0.1.2](https://github.com/natescherer/postmodern-docker-container-copiertemplate/compare/v0.1.1...v0.1.2) (2024-12-31)
+## 0.1.2 (2024-12-31)
 
 
 ### Bug Fixes
 
 * Fix src directory ([f344c17](https://github.com/natescherer/postmodern-docker-container-copiertemplate/commit/f344c17cb00274fbce7af4ddf84bbb64373b5757))
 
-## [0.1.1](https://github.com/natescherer/postmodern-docker-container-copiertemplate/compare/v0.1.0...v0.1.1) (2024-12-31)
+## 0.1.1 (2024-12-31)
 
 
 ### Bug Fixes
 
 * Fix renovate jinja ([3310d6d](https://github.com/natescherer/postmodern-docker-container-copiertemplate/commit/3310d6deafa5cf8e7aaaabe3ee8528123af677b1))
 
-## [0.1.0](https://github.com/natescherer/postmodern-docker-container-copiertemplate/compare/v0.0.1...v0.1.0) (2024-12-31)
+## 0.1.0 (2024-12-31)
 
 
 ### Features
