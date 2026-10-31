@@ -948,6 +948,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#docker-repo" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Docker Repo
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#cleaning-up" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -1508,6 +1519,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#docker-repo" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Docker Repo
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#cleaning-up" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -1657,7 +1679,7 @@ list in one sitting.</p>
   logged in, with Git authentication set up.</li>
 <li class="task-list-item">
 <p><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Give the GitHub CLI the scopes the run and its cleanup need:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>gh<span class="w"> </span>auth<span class="w"> </span>refresh<span class="w"> </span>-h<span class="w"> </span>github.com<span class="w"> </span>-s<span class="w"> </span>repo,workflow,delete_repo
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>gh<span class="w"> </span>auth<span class="w"> </span>refresh<span class="w"> </span>-h<span class="w"> </span>github.com<span class="w"> </span>-s<span class="w"> </span>repo,workflow,delete_repo,read:packages,delete:packages
 </span></code></pre></div>
 </li>
 <li class="task-list-item">
@@ -1826,15 +1848,45 @@ current content, left no conflict markers, and applied <code>.github/settings.ym
 <code>Test (Auto): PR Validation</code> triggers and passes on a new PR. Every check prints <code>[PASS]</code>.</p>
 </li>
 </ul>
+<h2 id="docker-repo">Docker Repo<a class="headerlink" href="#docker-repo" title="Permanent link">&para;</a></h2>
+<p>A Standard copy at <code>HEAD</code>, with <code>zensical_target: GitHub Pages</code>. Repos A and B are Template
+projects, which don't render the Docker workflows, so this one has its own run.</p>
+<p><em>Automated: a merge under <code>src/</code> publishes the <code>ci</code> image; a release dispatches Docker (Auto):
+Publish Release Image, which publishes <code>latest</code> and the version tags; both images have valid
+build attestations; and the release image runs, its entrypoint mapping <code>HOST_UID</code> and <code>HOST_GID</code>.</em></p>
+<ul class="task-list">
+<li class="task-list-item">
+<p><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Confirm the Docker daemon is running; this prints a <code>Server</code> section:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>docker<span class="w"> </span>version
+</span></code></pre></div>
+</li>
+<li class="task-list-item">
+<p><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Start the run:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nb">cd</span><span class="w"> </span>&lt;template-repo-path&gt;
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>mise<span class="w"> </span>run<span class="w"> </span>integration-test-docker
+</span></code></pre></div>
+</li>
+<li class="task-list-item">
+<p><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> When it finishes, its summary says "all checks passed". If a check failed, find out why in
+  <code>&lt;template-repo-path&gt;/.cache/integration-test/&lt;timestamp&gt;-docker/</code>, fix the cause, clean up
+  (see <a href="#cleaning-up">Cleaning Up</a>), and start again.</p>
+</li>
+</ul>
 <h2 id="cleaning-up">Cleaning Up<a class="headerlink" href="#cleaning-up" title="Permanent link">&para;</a></h2>
 <ul class="task-list">
 <li class="task-list-item">
 <p><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Delete the test repos, and confirm when it asks:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nb">cd</span><span class="w"> </span>&lt;template-repo-path&gt;
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>mise<span class="w"> </span>run<span class="w"> </span>integration-test-cleanup-gh
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nb">cd</span><span class="w"> </span>&lt;template-repo-path&gt;
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>mise<span class="w"> </span>run<span class="w"> </span>integration-test-cleanup-gh
 </span></code></pre></div>
 <p>It deletes every integration-test repo under your account, and their local clones,
 including any left by a run that stopped partway.</p>
+</li>
+<li class="task-list-item">
+<p><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Delete the Docker repo and its package, and confirm when it asks:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nb">cd</span><span class="w"> </span>&lt;template-repo-path&gt;
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>mise<span class="w"> </span>run<span class="w"> </span>integration-test-docker-cleanup
+</span></code></pre></div>
 </li>
 </ul>
 
