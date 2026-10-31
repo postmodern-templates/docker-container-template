@@ -19,7 +19,7 @@ for `<repo-a-path>` and `<repo-b-path>`. Each entry's **Web** link opens that re
 - [ ] Give the GitHub CLI the scopes the run and its cleanup need:
 
     ```sh
-    gh auth refresh -h github.com -s repo,workflow,delete_repo
+    gh auth refresh -h github.com -s repo,workflow,delete_repo,read:packages,delete:packages
     ```
 
 - [ ] Set the `CODECOV_TOKEN` environment variable to your Codecov account's global upload
@@ -205,6 +205,32 @@ that release, it detects the release.*
     current content, left no conflict markers, and applied `.github/settings.yml`, and that
     `Test (Auto): PR Validation` triggers and passes on a new PR. Every check prints `[PASS]`.
 
+## Docker Repo
+
+A Standard copy at `HEAD`, with `zensical_target: GitHub Pages`. Repos A and B are Template
+projects, which don't render the Docker workflows, so this one has its own run.
+
+*Automated: a merge under `src/` publishes the `ci` image; a release dispatches Docker (Auto):
+Publish Release Image, which publishes `latest` and the version tags; both images have valid
+build attestations; and the release image runs, its entrypoint mapping `HOST_UID` and `HOST_GID`.*
+
+- [ ] Confirm the Docker daemon is running; this prints a `Server` section:
+
+    ```sh
+    docker version
+    ```
+
+- [ ] Start the run:
+
+    ```sh
+    cd <template-repo-path>
+    mise run integration-test-docker
+    ```
+
+- [ ] When it finishes, its summary says "all checks passed". If a check failed, find out why in
+  `<template-repo-path>/.cache/integration-test/<timestamp>-docker/`, fix the cause, clean up
+  (see [Cleaning Up](#cleaning-up)), and start again.
+
 ## Cleaning Up
 
 - [ ] Delete the test repos, and confirm when it asks:
@@ -216,3 +242,10 @@ that release, it detects the release.*
 
     It deletes every integration-test repo under your account, and their local clones,
     including any left by a run that stopped partway.
+
+- [ ] Delete the Docker repo and its package, and confirm when it asks:
+
+    ```sh
+    cd <template-repo-path>
+    mise run integration-test-docker-cleanup
+    ```
