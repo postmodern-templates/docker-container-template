@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.13](https://github.com/postmodern-templates/docker-container-template/compare/v0.1.12...v0.1.13) (2026-10-31)
+
+
+### Miscellaneous
+
+* Move Copier answers to .config and repoint the parent ([fec90e0](https://github.com/postmodern-templates/docker-container-template/commit/fec90e0381e8bdf3f0901f1d4890fce22602e0e2))
+* Move Copier answers to .config and repoint the parent ([a695b42](https://github.com/postmodern-templates/docker-container-template/commit/a695b42fa4acf7675870dd903c6eacce61b30365))
+
 ## [0.1.12](https://github.com/natescherer/postmodern-docker-container-copiertemplate/compare/v0.1.11...v0.1.12) (2025-01-10)
 
 
