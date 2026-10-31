@@ -1,6 +1,6 @@
 {
-  "projectName": "postmodern-docker-container-copiertemplate",
-  "projectOwner": "natescherer",
+  "projectName": "docker-container-template",
+  "projectOwner": "postmodern-templates",
   "files": [
     "README.md"
   ],
