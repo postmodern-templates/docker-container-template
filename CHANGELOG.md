@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.1 (2026-11-02)
+
+### Fixes
+
+- find org packages by name in Docker test cleanup (#79)
+
 ## 0.2.0 (2026-11-02)
 
 ### Breaking Changes
