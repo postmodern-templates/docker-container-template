@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.2.0 (2026-11-02)
+
+### Breaking Changes
+
+#### Update to parent template 0.8.2
+
+Replaces Trunk, release-please, and the Invoke tasks with mise, prek, and Knope, and restructures the workflows and docs. See the [parent's upgrade guide](https://postmodern-templates.github.io/repo-template/latest/maintaining/upgrading-from-0x/).
+
+### Features
+
+- port the Docker workflows to the current template
+- run the Docker image as a non-root user by default (#75)
+- let integration tests create repos under a chosen owner ([postmodern-templates/repo-template#1345](https://github.com/postmodern-templates/repo-template/issues/1345))
+
+### Fixes
+
+- create Docker test repos under the repo's owner (#70)
+- stop passing --leaf to the Docker integration test (#71)
+- skip the Dockerfile's gosu download URL in link checks (#74)
+- make the Docker entrypoint executable on any host (#76)
+- skip image attestations in private repos (#78)
+- write the seeded version file with LF on Windows ([postmodern-templates/repo-template#1348](https://github.com/postmodern-templates/repo-template/issues/1348))
+- center the lifecycle notice above the README title ([postmodern-templates/repo-template#1350](https://github.com/postmodern-templates/repo-template/issues/1350))
+
 ## 0.1.12 (2025-01-10)
 
 
