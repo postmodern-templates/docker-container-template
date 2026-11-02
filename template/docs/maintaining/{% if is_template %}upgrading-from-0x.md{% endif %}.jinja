@@ -7,6 +7,16 @@
 [Stability Policy](../reference/stability-policy.md). How a 0.x project gets there depends on
 the version it was last updated to, recorded as `_commit` in its Copier answers file.
 
+!!! warning "Before you stage the update"
+    Releases before v0.8.0 shipped a `.gitattributes` that the update deletes. While the index
+    still holds it, `git add` can apply its `* text eol=lf` rule to new files, which corrupts
+    binary ones such as the images under `docs/assets/`. If `git status` shows `.gitattributes`
+    as deleted after the update, run this before anything else you stage:
+
+    ```sh
+    git rm --cached .gitattributes
+    ```
+
 ## From v0.7.14 or later
 
 Update as [Updating from the Parent Template](updating-from-template.md) describes, but in
