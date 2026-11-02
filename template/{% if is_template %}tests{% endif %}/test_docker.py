@@ -53,3 +53,14 @@ def test_docker_tasks_pass_only_known_flags(template_source, tmp_path: Path, ans
     for name in ("integration-test-docker", "integration-test-docker-cleanup"):
         for flag in re.findall(r"(?<!\S)--[a-z-]+", tasks[name]["run"]):
             assert f'"{flag}"' in script, f"{name} passes unknown {flag}"  # noqa: S101
+
+
+@pytest.mark.parametrize("answers", STANDARD_GITHUB_ANSWERS, ids=lambda a: a["id"])
+def test_dockerfile_makes_entrypoint_executable(
+    template_source, tmp_path: Path, answers
+):
+    """The image has to set the entrypoint's mode, which a Windows copy drops."""
+    dest = tmp_path / "out"
+    _render(template_source, dest, answers)
+    dockerfile = (dest / "src" / "Dockerfile").read_text(encoding="utf-8")
+    assert "COPY --chmod=755 entrypoint.sh" in dockerfile  # noqa: S101
