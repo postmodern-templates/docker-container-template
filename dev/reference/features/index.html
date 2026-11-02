@@ -1143,6 +1143,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#container-image-attestations" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Container Image Attestations
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#editor-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -1516,6 +1527,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#container-image-attestations" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Container Image Attestations
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#editor-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -1755,6 +1777,11 @@ logs that way needs the first form.</p>
 <p>Install packages in <code>src/Dockerfile</code> before its <code>USER</code> line. For an app that starts child
 processes, add <code>--init</code> to <code>docker run</code> (<code>init: true</code> in Compose), so they get reaped and
 signals reach them.</p>
+<h2 id="container-image-attestations">Container Image Attestations<a class="headerlink" href="#container-image-attestations" title="Permanent link">&para;</a></h2>
+<p>Public repos get a signed build attestation for each image, which <code>gh attestation verify
+oci://ghcr.io/&lt;owner&gt;/&lt;repo&gt;:&lt;tag&gt; --repo &lt;owner&gt;/&lt;repo&gt;</code> checks. Private repos skip this step,
+since it needs GitHub Enterprise Cloud; on that plan, remove the step's <code>if</code> from the
+<code>docker-auto-publish*.yml</code> workflows.</p>
 <h2 id="editor-configuration">Editor Configuration<a class="headerlink" href="#editor-configuration" title="Permanent link">&para;</a></h2>
 <p><a href="https://code.visualstudio.com/">Visual Studio Code</a> settings and extension recommendations are included.</p>
 
