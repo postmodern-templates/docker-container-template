@@ -148,7 +148,7 @@ run = "python scripts/integration_test_github.py --cleanup --repo-prefix {{ repo
 usage = '''
 flag "--owner <owner>" help="User or organization for the test repo"{% if using_github %} default="{{ github_repo_owner }}"{% endif %}
 '''
-run = "python scripts/integration_test_docker.py --source {% if using_github %}https://github.com/{{ github_repo_owner }}/{{ repo_name }}{% elif using_azdo %}git+https://dev.azure.com/{{ azdo_org }}/{{ azdo_project_encoded }}/_git/{{ repo_name }}{% endif %} --repo-prefix {{ repo_name }}{% if not is_extensible %} --leaf{% endif %}"
+run = "python scripts/integration_test_docker.py --source {% if using_github %}https://github.com/{{ github_repo_owner }}/{{ repo_name }}{% elif using_azdo %}git+https://dev.azure.com/{{ azdo_org }}/{{ azdo_project_encoded }}/_git/{{ repo_name }}{% endif %} --repo-prefix {{ repo_name }}"
 
 [tasks.integration-test-docker-cleanup]
 # Deletes every repo and package integration-test-docker created, including those of a
@@ -157,7 +157,7 @@ run = "python scripts/integration_test_docker.py --source {% if using_github %}h
 usage = '''
 flag "--owner <owner>" help="User or organization for the test repo"{% if using_github %} default="{{ github_repo_owner }}"{% endif %}
 '''
-run = "python scripts/integration_test_docker.py --cleanup --repo-prefix {{ repo_name }}{% if not is_extensible %} --leaf{% endif %}"
+run = "python scripts/integration_test_docker.py --cleanup --repo-prefix {{ repo_name }}"
 
 [tasks.integration-test-azdo]
 {%- set org_default = azdo_org if using_azdo else '' %}
