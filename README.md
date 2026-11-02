@@ -21,12 +21,6 @@
   </p>
 </div>
 
-<p align="center">
-  <img src="docs/assets/images/readme-screenshot.png" alt="Screenshot">
-</p>
-
-A Copier template to build and publish a Docker container with the Hard/Boring stuff automated, so you can get back to coding.
-
 ## What kind of repo does it make?
 
 One that builds a Docker container and publishes it to GitHub Container Registry.
