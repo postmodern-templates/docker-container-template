@@ -231,6 +231,9 @@ build attestations; and the release image runs, its entrypoint mapping `HOST_UID
     mise run integration-test-docker
     ```
 
+    To create the repo under another user or organization you can create repos in, add
+    `--owner <user-or-org>`.
+
 - [ ] When it finishes, its summary says "all checks passed". If a check failed, find out why in
   `<template-repo-path>/.cache/integration-test/<timestamp>-docker/`, fix the cause, clean up
   (see [Cleaning Up](#cleaning-up)), and start again.
@@ -254,3 +257,5 @@ build attestations; and the release image runs, its entrypoint mapping `HOST_UID
     cd <template-repo-path>
     mise run integration-test-docker-cleanup
     ```
+
+    If the run used `--owner`, add the same `--owner <user-or-org>` here.
