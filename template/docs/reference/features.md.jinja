@@ -209,6 +209,13 @@ Install packages in `src/Dockerfile` before its `USER` line. For an app that sta
 processes, add `--init` to `docker run` (`init: true` in Compose), so they get reaped and
 signals reach them.
 
+## Container Image Attestations
+
+Public repos get a signed build attestation for each image, which `gh attestation verify
+oci://ghcr.io/<owner>/<repo>:<tag> --repo <owner>/<repo>` checks. Private repos skip this step,
+since it needs GitHub Enterprise Cloud; on that plan, remove the step's `if` from the
+`docker-auto-publish*.yml` workflows.
+
 ## Editor Configuration
 
 [Visual Studio Code](https://code.visualstudio.com/) settings and extension recommendations are included.
