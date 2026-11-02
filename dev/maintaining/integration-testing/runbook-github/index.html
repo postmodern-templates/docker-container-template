@@ -1868,6 +1868,8 @@ build attestations; and the release image runs, its entrypoint mapping <code>HOS
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nb">cd</span><span class="w"> </span>&lt;template-repo-path&gt;
 </span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>mise<span class="w"> </span>run<span class="w"> </span>integration-test-docker
 </span></code></pre></div>
+<p>To create the repo under another user or organization you can create repos in, add
+<code>--owner &lt;user-or-org&gt;</code>.</p>
 </li>
 <li class="task-list-item">
 <p><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> When it finishes, its summary says "all checks passed". If a check failed, find out why in
@@ -1891,6 +1893,7 @@ including any left by a run that stopped partway. If the run used <code>--owner<
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nb">cd</span><span class="w"> </span>&lt;template-repo-path&gt;
 </span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>mise<span class="w"> </span>run<span class="w"> </span>integration-test-docker-cleanup
 </span></code></pre></div>
+<p>If the run used <code>--owner</code>, add the same <code>--owner &lt;user-or-org&gt;</code> here.</p>
 </li>
 </ul>
 
