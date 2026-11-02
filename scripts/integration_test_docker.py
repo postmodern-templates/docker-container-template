@@ -324,6 +324,32 @@ def verify_docker(
     say(f"Package: https://github.com/{account}/{owner}/packages/container/{package}")
 
 
+def find_packages(
+    packages: str, pattern: re.Pattern[str], repo_names: set[str]
+) -> list[str]:
+    """Find the test packages under `packages`, including ones the list endpoint omits.
+
+    An organization's list endpoint can return nothing for packages that exist, so this
+    also looks up the package each test repo publishes, which shares the repo's name.
+
+    Returns:
+        The names of the packages found, sorted.
+
+    """
+    listed = json.loads(
+        gh_value("api", "--paginate", f"{packages}?package_type=container") or "[]"
+    )
+    found = {p["name"] for p in listed if pattern.fullmatch(p["name"])}
+    for name in repo_names - found:
+        lookup = run(
+            "gh", "api", f"{packages}/container/{name}",
+            check=False, capture=True, echo=False,
+        )  # fmt: skip
+        if lookup.returncode == 0:
+            found.add(name)
+    return sorted(found)
+
+
 def cleanup(owner: str, login: str, repo_prefix: str, *, yes: bool) -> None:
     """Delete every test repo main() created under `owner`, its package, and clone.
 
@@ -346,11 +372,10 @@ def cleanup(owner: str, login: str, repo_prefix: str, *, yes: bool) -> None:
     )
     names = sorted(r["name"] for r in repos if pattern.fullmatch(r["name"]))
     packages = packages_api(owner, login)
-    found = json.loads(
-        gh_value("api", "--paginate", f"{packages}?package_type=container") or "[]"
-    )
-    package_names = sorted(p["name"] for p in found if pattern.fullmatch(p["name"]))
     clones = local_clones(pattern, "github.com")
+    package_names = find_packages(
+        packages, pattern, {*names, *(Path(clone).name for clone in clones)}
+    )
     if not names and not package_names and not clones:
         say(f"No Docker integration-test repos, packages, or clones under {owner}.")
         return
