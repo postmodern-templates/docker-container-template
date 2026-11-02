@@ -64,3 +64,14 @@ def test_dockerfile_makes_entrypoint_executable(
     _render(template_source, dest, answers)
     dockerfile = (dest / "src" / "Dockerfile").read_text(encoding="utf-8")
     assert "COPY --chmod=755 entrypoint.sh" in dockerfile  # noqa: S101
+
+
+@pytest.mark.parametrize("answers", STANDARD_GITHUB_ANSWERS, ids=lambda a: a["id"])
+def test_attestation_skips_private_repos(template_source, tmp_path: Path, answers):
+    """Attesting fails in a private repo without GitHub Enterprise Cloud."""
+    dest = tmp_path / "out"
+    _render(template_source, dest, answers)
+    workflows = dest / ".github" / "workflows"
+    for name in ("docker-auto-publishci.yml", "docker-auto-publishrelease.yml"):
+        workflow = (workflows / name).read_text(encoding="utf-8")
+        assert "if: github.event.repository.private == false" in workflow  # noqa: S101
