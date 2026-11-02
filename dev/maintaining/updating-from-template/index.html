@@ -1252,7 +1252,7 @@
 
 
 <h1 id="updating-from-the-parent-template">Updating from the Parent Template<a class="headerlink" href="#updating-from-the-parent-template" title="Permanent link">&para;</a></h1>
-<p>This project was generated from the <a href="https://github.com/natescherer/postmodern-repo-copiertemplate">Postmodern Repo Copier Template</a>
+<p>This project was generated from the <a href="https://github.com/postmodern-templates/repo-template">Postmodern Repo Template</a>
 <a href="https://copier.readthedocs.io/">Copier</a> template. On the 1<sup>st</sup> of each month, the Monthly Maintenance
 workflow/pipeline's Copier Update Check job checks for a new template release and sends a notification to
 <code>APPRISE_URL</code> when one is available; see <a href="../../reference/token-permissions/#apprise_url">Secrets and Tokens</a>.</p>
@@ -1261,7 +1261,7 @@ workflow/pipeline's Copier Update Check job checks for a new template release an
 <li>Start from a clean working tree on a new branch; Copier won't update over uncommitted
    changes.</li>
 <li>If the update crosses a major version, read that release's <strong>Breaking Changes</strong> in the
-   template's changelog first; see its <a href="https://natescherer.github.io/postmodern-repo-copiertemplate/latest/reference/stability-policy/">Stability Policy</a>.</li>
+   template's changelog first; see its <a href="https://postmodern-templates.github.io/repo-template/latest/reference/stability-policy/">Stability Policy</a>.</li>
 <li>Run <code>mise run copier-update</code>. It reuses your recorded answers and asks only the questions
    added since your last update.</li>
 <li>Resolve any conflicts where your own edits overlap a template change; Copier marks
@@ -1287,7 +1287,7 @@ over the project:</p>
    that starts with <code>_</code> from the copy.</li>
 <li>
 <p>Run:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>mise<span class="w"> </span>x<span class="w"> </span>--<span class="w"> </span>copier<span class="w"> </span>copy<span class="w"> </span>--trust<span class="w"> </span>--overwrite<span class="w"> </span>--data-file<span class="w"> </span>&lt;temporary-answers-file&gt;<span class="w"> </span>https://github.com/natescherer/postmodern-repo-copiertemplate<span class="w"> </span>.
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>mise<span class="w"> </span>x<span class="w"> </span>--<span class="w"> </span>copier<span class="w"> </span>copy<span class="w"> </span>--trust<span class="w"> </span>--overwrite<span class="w"> </span>--data-file<span class="w"> </span>&lt;temporary-answers-file&gt;<span class="w"> </span>https://github.com/postmodern-templates/repo-template<span class="w"> </span>.
 </span></code></pre></div>
 </li>
 <li>

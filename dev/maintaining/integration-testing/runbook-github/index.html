@@ -1673,8 +1673,9 @@ list in one sitting.</p>
 </div>
 <h2 id="before-you-start">Before You Start<a class="headerlink" href="#before-you-start" title="Permanent link">&para;</a></h2>
 <ul class="task-list">
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> The GitHub <a href="../../../getting-started/prerequisites/">Prerequisites</a> are in place for your
-  account: all four GitHub apps, including the optional ones, each with access to all
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> The GitHub <a href="../../../getting-started/prerequisites/">Prerequisites</a> are in place for the
+  account that will own the test repos, which is this repo's owner unless you pass <code>--owner</code>
+  below: all four GitHub apps, including the optional ones, each with access to all
   repositories, since the test repos are public with <code>code_coverage</code> on; and the GitHub CLI,
   logged in, with Git authentication set up.</li>
 <li class="task-list-item">
@@ -1683,7 +1684,7 @@ list in one sitting.</p>
 </span></code></pre></div>
 </li>
 <li class="task-list-item">
-<p><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Set the <code>CODECOV_TOKEN</code> environment variable to your Codecov account's global upload
+<p><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Set the <code>CODECOV_TOKEN</code> environment variable to that account's global Codecov upload
   token, which the run stores as Repo A's secret; a new repo has no per-repo token yet. The
   run requires it, and stops before creating anything without it.</p>
 </li>
@@ -1695,6 +1696,8 @@ list in one sitting.</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">cd</span><span class="w"> </span>&lt;template-repo-path&gt;
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>mise<span class="w"> </span>run<span class="w"> </span>integration-test-gh
 </span></code></pre></div>
+<p>To create the repos under another user or organization you can create repos in, add
+<code>--owner &lt;user-or-org&gt;</code>.</p>
 </li>
 <li class="task-list-item">
 <p><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> When it finishes, its summary says "all checks passed" for both repos. If a check failed,
@@ -1879,8 +1882,9 @@ build attestations; and the release image runs, its entrypoint mapping <code>HOS
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nb">cd</span><span class="w"> </span>&lt;template-repo-path&gt;
 </span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>mise<span class="w"> </span>run<span class="w"> </span>integration-test-cleanup-gh
 </span></code></pre></div>
-<p>It deletes every integration-test repo under your account, and their local clones,
-including any left by a run that stopped partway.</p>
+<p>It deletes every integration-test repo under this repo's owner, and their local clones,
+including any left by a run that stopped partway. If the run used <code>--owner</code>, add the same
+<code>--owner &lt;user-or-org&gt;</code> here.</p>
 </li>
 <li class="task-list-item">
 <p><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Delete the Docker repo and its package, and confirm when it asks:</p>

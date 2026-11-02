@@ -1517,11 +1517,15 @@ off, as <code>Project Collection Build Service (&lt;Org&gt;)</code>.</p>
 <li>Install the <a href="https://learn.microsoft.com/cli/azure/install-azure-cli">Azure CLI</a>.</li>
 <li>Install its Azure DevOps extension and log in:
     <div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>az extension add --name azure-devops
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>az login
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>az login --allow-no-subscriptions --use-device-code
 </span></code></pre></div></li>
 <li>Install <a href="https://github.com/git-ecosystem/git-credential-manager">Git Credential Manager</a> to
    authenticate Git over HTTPS. Git for Windows includes it; on macOS and Linux, install it
    separately.</li>
+<li>Sign Git in to your organization, replacing both <code>&lt;org&gt;</code>s, and enter the code it prints at
+   the page it names. Git Credential Manager keeps its own sign-in, separate from <code>az login</code>:
+    <div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>echo url=https://&lt;org&gt;@dev.azure.com/&lt;org&gt;/ | git -c credential.msauthFlow=devicecode credential fill | git credential approve
+</span></code></pre></div></li>
 </ol>
 </div>
 </div>
