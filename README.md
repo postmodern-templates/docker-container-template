@@ -62,7 +62,7 @@ Contributions and bug reports are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md
 <table>
   <tbody>
     <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/natescherer"><img src="https://avatars.githubusercontent.com/u/376408?v=4?s=100" width="100px;" alt="Nate Scherer"/><br /><sub><b>Nate Scherer</b></sub></a><br /><a href="#maintenance-natescherer" title="Maintenance">🚧</a> <a href="#code-natescherer" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/natescherer"><img src="https://avatars.githubusercontent.com/u/376408?v=4?s=100" width="100px;" alt="Nate Scherer"/><br /><sub><b>Nate Scherer</b></sub></a><br /><a href="#maintenance-natescherer" title="Maintenance">🚧</a> <a href="#code-natescherer" title="Code">💻</a> <a href="#doc-natescherer" title="Documentation">📖</a></td>
     </tr>
   </tbody>
 </table>
