@@ -113,6 +113,10 @@ run = "uv run scripts/template_docs_server.py"
 # for inspection; delete them with `mise run integration-test-cleanup-gh`. See
 # {{ docs_url }}maintaining/integration-testing/index.html and
 # {{ docs_url }}maintaining/integration-testing/runbook-github{{ docs_page_suffix }}.
+# The repos go under this repo's owner; pass --owner for another user or organization.
+usage = '''
+flag "--owner <owner>" help="User or organization for the test repos"{% if using_github %} default="{{ github_repo_owner }}"{% endif %}
+'''
 run = "python scripts/integration_test_github.py --source {% if using_github %}https://github.com/{{ github_repo_owner }}/{{ repo_name }}{% elif using_azdo %}git+https://dev.azure.com/{{ azdo_org }}/{{ azdo_project_encoded }}/_git/{{ repo_name }}{% endif %} --repo-prefix {{ repo_name }}{% if not is_extensible %} --leaf{% endif %}"
 
 [tasks.integration-test-verify-update-gh]
@@ -129,7 +133,10 @@ run = "python scripts/integration_test_github.py --verify-update --repo-prefix {
 
 [tasks.integration-test-cleanup-gh]
 # Deletes every repo integration-test-gh created, including those of a run that
-# stopped partway, after listing them and asking.
+# stopped partway, after listing them and asking. Pass the same --owner as that run.
+usage = '''
+flag "--owner <owner>" help="User or organization for the test repos"{% if using_github %} default="{{ github_repo_owner }}"{% endif %}
+'''
 run = "python scripts/integration_test_github.py --cleanup --repo-prefix {{ repo_name }}"
 
 [tasks.integration-test-docker]

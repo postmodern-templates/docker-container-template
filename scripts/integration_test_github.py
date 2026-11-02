@@ -173,6 +173,7 @@ def create(
     repo_name: str,
     dest: str,
     owner: str,
+    login: str,
     zensical_target: str,
     *,
     code_coverage: bool,
@@ -180,16 +181,16 @@ def create(
 ) -> None:
     """Run the template to create the test repo.
 
-    `github_username` is set to the resolved `owner` instead of auto-detected from local
-    git config. copier.yml.jinja templates `.github/settings.yml` (such as `homepage`)
-    from `github_repo_owner`, which defaults to `github_username`, so an auto-detected
-    value that differs from the account gh is logged in as would break verify() for an
-    unrelated reason.
+    `github_username` is set to `login`, the account gh is logged in as, instead of
+    auto-detected from local git config, and `github_org` to `owner` when that's another
+    account. copier.yml.jinja templates `.github/settings.yml` (such as `homepage`) from
+    `github_repo_owner`, which they determine, so an auto-detected value that differs
+    from `owner` would break verify() for an unrelated reason.
 
     `zensical_target` and `code_coverage` are explicit, so the two repos can cover
     different values instead of both getting each question's default.
 
-    `--defaults` covers the questions without an explicit -d below (github_org and
+    `--defaults` covers the questions without an explicit -d below (such as
     author_name); without it, copier prompts for them. Explicit -d values take priority
     over --defaults.
     """
@@ -206,7 +207,9 @@ def create(
         "-d",
         "developer_platform=GitHub",
         "-d",
-        f"github_username={owner}",
+        f"github_username={login}",
+        "-d",
+        f"github_org={owner if owner != login else 'None'}",
         "-d",
         f"project_description={PROJECT_DESCRIPTION}",
         *template_answers(leaf=leaf),
@@ -1546,6 +1549,14 @@ def main() -> None:
     parser.add_argument("--source", help="Copier template source URL")
     parser.add_argument("--repo-prefix", help="This repo's own name")
     parser.add_argument(
+        "--owner",
+        default=os.environ.get("usage_owner"),
+        help=(
+            "User or organization to create test repos under, and for --cleanup to "
+            "delete them from. Defaults to the account gh is logged in as."
+        ),
+    )
+    parser.add_argument(
         "--leaf",
         action="store_true",
         help="The source is a leaf template, whose projects can't be templates.",
@@ -1591,7 +1602,9 @@ def main() -> None:
         if not args.repo_prefix:
             raise SystemExit("--cleanup requires --repo-prefix.")
         cleanup(
-            gh_value("api", "user", "--jq", ".login"), args.repo_prefix, yes=args.yes
+            args.owner or gh_value("api", "user", "--jq", ".login"),
+            args.repo_prefix,
+            yes=args.yes,
         )
         return
 
@@ -1618,7 +1631,8 @@ def main() -> None:
         raise SystemExit("--source and --repo-prefix are required.")
     token = codecov_token()
 
-    owner = gh_value("api", "user", "--jq", ".login")
+    login = gh_value("api", "user", "--jq", ".login")
+    owner = args.owner or login
     timestamp = int(time.time())
 
     heading(
@@ -1635,6 +1649,7 @@ def main() -> None:
         repo_a_name,
         dest_a,
         owner,
+        login,
         "GitHub Pages",
         code_coverage=True,
         leaf=args.leaf,
@@ -1680,6 +1695,7 @@ def main() -> None:
         repo_b_name,
         dest_b,
         owner,
+        login,
         "docs-site Directory in Repo",
         code_coverage=False,
         leaf=args.leaf,
