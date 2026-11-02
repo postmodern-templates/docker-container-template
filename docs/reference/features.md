@@ -130,6 +130,13 @@ IDs, so they match your own only if your host user is also 1000. Otherwise, pick
     docker run --user 0 -e HOST_UID="$(id -u)" -e HOST_GID="$(id -g)" -v "$PWD:/data" <image>
     ```
 
+!!! warning "Limits of giving the image's user your IDs"
+    This form changes the user's UID with `usermod`, which also re-owns everything under the home
+    directory that the old UID owned. That includes bind mounts there, such as `/home/app/data`,
+    and the host files stay re-owned after the container exits, so mount them elsewhere, as `/data`
+    does above. The command also can't open `/dev/stdout` or `/dev/stderr` by path, so an app that
+    logs that way needs the first form.
+
 In Docker Compose, set the first form with `user`, then start it with
 `HOST_UID="$(id -u)" HOST_GID="$(id -g)" docker compose up`:
 
