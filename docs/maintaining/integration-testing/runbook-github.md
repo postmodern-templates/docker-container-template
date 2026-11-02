@@ -216,7 +216,9 @@ projects, which don't render the Docker workflows, so this one has its own run.
 
 *Automated: a merge under `src/` publishes the `ci` image; a release dispatches Docker (Auto):
 Publish Release Image, which publishes `latest` and the version tags; both images have valid
-build attestations; and the release image runs, its entrypoint mapping `HOST_UID` and `HOST_GID`.*
+build attestations; and the release image runs as non-root by default, runs hardened under
+`docker run --user`, maps `HOST_UID` and `HOST_GID` under `--user 0`, and passes on
+`docker stop`'s signal.*
 
 - [ ] Confirm the Docker daemon is running; this prints a `Server` section:
 
