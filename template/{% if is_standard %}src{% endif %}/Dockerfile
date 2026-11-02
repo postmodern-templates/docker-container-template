@@ -1,35 +1,13 @@
-FROM ubuntu:24.04@sha256:80dd3c3b9c6cecb9f1667e9290b3bc61b78c2678c02cbdae5f0fea92cc6734ab
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+FROM debian:trixie-slim@sha256:f6b08b09a05725f9431502d3b5714f5c4576e82c1a84fa1debe0c24a7e0c3ec4
 
-# renovate: datasource=repology depName=ubuntu_24_04/ca-certificates versioning=loose
-ENV RENOVATE_CA_CERTIFICATES_VERSION=20240203
+# Install what your application needs here, before USER drops root.
 
-# renovate: datasource=repology depName=ubuntu_24_04/curl versioning=loose
-ENV RENOVATE_CURL_VERSION=8.5.0-2ubuntu10.6
-
-# renovate: datasource=github-releases depName=tianon/gosu
-ENV RENOVATE_GOSU_VERSION=1.17
-
-# renovate: datasource=repology depName=ubuntu_24_04/nano versioning=loose
-ENV RENOVATE_NANO_VERSION=7.2-2ubuntu0.1
-
-
-ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update \
-    && apt-get install --no-install-recommends -y \
-    ca-certificates="${RENOVATE_CA_CERTIFICATES_VERSION}" \
-    curl="${RENOVATE_CURL_VERSION}" \
-    nano="${RENOVATE_NANO_VERSION}" \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN DPKG_ARCH="$(dpkg --print-architecture | awk -F- '{ print $NF }')" \
-	&& curl -fsSL -o gosu --output-dir /usr/local/bin "https://github.com/tianon/gosu/releases/download/$RENOVATE_GOSU_VERSION/gosu-$DPKG_ARCH" \
-	&& chmod +x /usr/local/bin/gosu \
-	&& gosu --version \
-	&& gosu nobody true
-
-WORKDIR /srv/dockercontainer
+WORKDIR /app
 COPY entrypoint.sh ./
-ENTRYPOINT ["/srv/dockercontainer/entrypoint.sh"]
-CMD ["nano", "--version"]
+# Some base images already have a UID 1000, such as Ubuntu's ubuntu user; this one doesn't.
+RUN id 1000 >/dev/null 2>&1 || useradd --uid 1000 --user-group --create-home app \
+    && chown 1000:1000 /app
+# Numeric, so Kubernetes' runAsNonRoot can verify it.
+USER 1000:1000
+ENTRYPOINT ["/app/entrypoint.sh"]
+CMD ["echo", "Replace this CMD with your application's command."]

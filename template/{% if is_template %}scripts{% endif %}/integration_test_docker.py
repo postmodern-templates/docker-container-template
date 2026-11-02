@@ -6,14 +6,16 @@ always runs against HEAD, to verify a release candidate on main before a release
 
 It merges a change under src/, checks that the CI image is published and attested,
 runs the release flow, checks the same for the release image, and runs that image to
-check that the entrypoint maps the UID and GID it's given. The repo and its package
-stay for inspection; delete them with `mise run integration-test-docker-cleanup`.
+check its non-root default, UID and GID mapping, and signal handling. The repo and
+its package stay for inspection; delete them with
+`mise run integration-test-docker-cleanup`.
 """
 
 import argparse
 import json
 import os
 import re
+import subprocess  # noqa: S404
 import sys
 import tempfile
 import time
@@ -164,27 +166,90 @@ def check_image(
 def check_entrypoint(
     repo: str, tag: str, env: dict[str, str], failures: list[str]
 ) -> None:
-    """Run the image and check its UID and GID mapping and default command."""
-    result = run(
-        "docker", "run", "--rm", "--pull", "always",
-        "-e", f"HOST_UID={TEST_UID}", "-e", f"HOST_GID={TEST_GID}",
-        f"ghcr.io/{repo.lower()}:{tag}",
-        check=False, capture=True, env=env,
-    )  # fmt: skip
+    """Run the image and check its non-root default, ID mapping, and signal handling."""
+    image = f"ghcr.io/{repo.lower()}:{tag}"
+
+    def docker_run(*args: str) -> subprocess.CompletedProcess[str]:
+        return run(
+            "docker", "run", "--rm", *args, check=False, capture=True, env=env
+        )  # fmt: skip
+
+    result = docker_run("--pull", "always", image)
     output = result.stdout + result.stderr
     save_log("docker-run.log", output)
     check(failures, "the image runs", result.returncode == 0, output.strip())
     check(
         failures,
-        "the entrypoint maps the given UID and GID",
-        f"UID: {TEST_UID}" in output and f"GID: {TEST_GID}" in output,
+        "the image's default command runs",
+        "Replace this CMD" in output,
         output.strip(),
+    )
+
+    default = docker_run(image, "id", "-u")
+    check(
+        failures,
+        "the image runs as its non-root user by default",
+        default.stdout.strip() == "1000",
+        (default.stdout + default.stderr).strip(),
+    )
+    hardened = docker_run(
+        "--user", f"{TEST_UID}:{TEST_GID}",
+        "--read-only", "--cap-drop=ALL", "--security-opt=no-new-privileges",
+        image, "id", "-u",
+    )  # fmt: skip
+    check(
+        failures,
+        "the image runs hardened under docker run --user",
+        hardened.stdout.strip() == TEST_UID,
+        (hardened.stdout + hardened.stderr).strip(),
+    )
+    mapped = docker_run(
+        "--user", "0", "-e", f"HOST_UID={TEST_UID}", "-e", f"HOST_GID={TEST_GID}",
+        image, "id",
+    )  # fmt: skip
+    check(
+        failures,
+        "--user 0 maps the given UID and GID",
+        f"uid={TEST_UID}" in mapped.stdout and f"gid={TEST_GID}" in mapped.stdout,
+        (mapped.stdout + mapped.stderr).strip(),
+    )
+    no_root = docker_run(
+        "--user", "0", "-e", "HOST_UID=0", "-e", f"HOST_GID={TEST_GID}", image, "id"
     )
     check(
         failures,
-        "the image's default command runs",
-        "GNU nano" in output,
-        output.strip(),
+        "--user 0 rejects a HOST_UID of 0",
+        no_root.returncode != 0,
+        (no_root.stdout + no_root.stderr).strip(),
+    )
+    ignored = docker_run("-e", f"HOST_UID={TEST_UID}", image, "id")
+    check(
+        failures,
+        "HOST_UID without --user 0 fails instead of being ignored",
+        ignored.returncode != 0,
+        (ignored.stdout + ignored.stderr).strip(),
+    )
+
+    # bash as PID 1 ignores SIGTERM without a trap, so without the entrypoint's exec the
+    # signal would never reach this trap, and docker stop would kill it (exit 137).
+    container = f"{repo.rsplit('/', 1)[-1]}-stop-check"
+    run(
+        "docker", "run", "-d", "--name", container, image,
+        "bash", "-c", 'trap "exit 0" TERM; sleep 300 & wait',
+        check=False, capture=True, env=env,
+    )  # fmt: skip
+    time.sleep(2)
+    run("docker", "stop", "-t", "8", container, check=False, capture=True, env=env)
+    exit_code = run(
+        "docker", "inspect", "-f", "{{.State.ExitCode}}", container,
+        check=False, capture=True, env=env,
+    )  # fmt: skip
+    run("docker", "rm", "-f", container, check=False, capture=True, env=env)
+    check(
+        failures,
+        "the command receives docker stop's signal",
+        exit_code.stdout.strip() == "0",
+        f"exit code {exit_code.stdout.strip()}",
     )
 
 

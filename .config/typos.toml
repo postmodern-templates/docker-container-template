@@ -15,3 +15,5 @@ postmodern-templates = "postmodern-templates"
 # Repo Name
 docker-container-template = "docker-container-template"
 # Custom Words Below
+# setpriv --inh-caps, in entrypoint.sh
+inh = "inh"

@@ -167,6 +167,41 @@ Choosing `project_type: Template` adds tooling for building and maintaining a te
 - On every `copier update`, any parent template change worth releasing is turned into a Knope changeset, so it reaches your own changelog and version bump instead of disappearing into a single update commit
 {%- endif %}
 
+## Container User and Bind Mounts
+
+The image runs as a non-root user, UID and GID 1000. Files it writes to a bind mount keep those
+IDs, so they match your own only if your host user is also 1000. Otherwise, pick one:
+
+- **Run as your own IDs**, which also works with `--read-only` and `--cap-drop=ALL`. The IDs
+  have no user name inside the container, so anything that looks one up fails:
+
+    ```sh
+    docker run --user "$(id -u):$(id -g)" -v "$PWD:/data" <image>
+    ```
+
+- **Give the image's user your IDs**, so it keeps its name and home directory. This starts as
+  root and drops privileges, so it needs default capabilities and a writable root filesystem:
+
+    ```sh
+    docker run --user 0 -e HOST_UID="$(id -u)" -e HOST_GID="$(id -g)" -v "$PWD:/data" <image>
+    ```
+
+In Docker Compose, set the first form with `user`, then start it with
+`HOST_UID="$(id -u)" HOST_GID="$(id -g)" docker compose up`:
+
+```yaml
+services:
+  app:
+    image: <image>
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    volumes:
+      - .:/data
+```
+
+Install packages in `src/Dockerfile` before its `USER` line. For an app that starts child
+processes, add `--init` to `docker run` (`init: true` in Compose), so they get reaped and
+signals reach them.
+
 ## Editor Configuration
 
 [Visual Studio Code](https://code.visualstudio.com/) settings and extension recommendations are included.
