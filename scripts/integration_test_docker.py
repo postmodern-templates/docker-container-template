@@ -12,6 +12,7 @@ stay for inspection; delete them with `mise run integration-test-docker-cleanup`
 
 import argparse
 import json
+import os
 import re
 import sys
 import tempfile
@@ -99,15 +100,25 @@ def check_prerequisites() -> None:
         raise SystemExit("Docker isn't running. Start it, then rerun.")
 
 
-def image_tags(package: str) -> set[str]:
-    """List the tags published in the account's container package.
+def packages_api(owner: str, login: str) -> str:
+    """Find the REST path of `owner`'s packages, which differs for an organization.
+
+    Returns:
+        `user/packages` for the account gh is logged in as, else the organization's.
+
+    """
+    return "user/packages" if owner == login else f"orgs/{owner}/packages"
+
+
+def image_tags(packages: str, package: str) -> set[str]:
+    """List the tags published in a container package under `packages`.
 
     Returns:
         Every tag on every version, or an empty set if the package doesn't exist.
 
     """
     result = run(
-        "gh", "api", "--paginate", f"user/packages/container/{package}/versions",
+        "gh", "api", "--paginate", f"{packages}/container/{package}/versions",
         "--jq", ".[].metadata.container.tags[]",
         check=False, capture=True,
     )  # fmt: skip
@@ -124,12 +135,13 @@ def check_image(
     repo: str,
     tag: str,
     expected_tags: set[str],
+    packages: str,
     env: dict[str, str],
     failures: list[str],
 ) -> None:
     """Check that the expected tags exist and that `tag` has a valid attestation."""
     package = repo.rsplit("/", 1)[-1]
-    tags = image_tags(package)
+    tags = image_tags(packages, package)
     check(
         failures,
         f"the package has tags {sorted(expected_tags)}",
@@ -176,9 +188,12 @@ def check_entrypoint(
     )
 
 
-def verify_docker(repo: str, dest: str, source: str, failures: list[str]) -> None:
+def verify_docker(
+    repo: str, login: str, dest: str, source: str, failures: list[str]
+) -> None:
     """Exercise both workflows and the published images, against a real repo."""
-    package = repo.rsplit("/", 1)[-1]
+    owner, package = repo.split("/", 1)
+    packages = packages_api(owner, login)
     if setup := prepare_repo_b(source):
         step("Merging the setup PR")
         open_pr_wait_and_merge(
@@ -193,9 +208,8 @@ def verify_docker(repo: str, dest: str, source: str, failures: list[str]) -> Non
         # A throwaway config, so the login below leaves the user's own untouched.
         env = {"DOCKER_CONFIG": docker_config}
         token = gh_value("auth", "token", echo=False)
-        owner = repo.split("/", 1)[0]
         run(
-            "docker", "login", "ghcr.io", "-u", owner, "--password-stdin",
+            "docker", "login", "ghcr.io", "-u", login, "--password-stdin",
             capture=True, env=env, stdin=token, secret=True,
         )  # fmt: skip
 
@@ -217,7 +231,7 @@ def verify_docker(repo: str, dest: str, source: str, failures: list[str]) -> Non
         )
         run_id = wait_for_new_run(repo, CI_WORKFLOW, before, event="push")
         check_workflow_run(repo, run_id, "a merge under src/'s CI image run", failures)
-        check_image(repo, "ci", {"ci"}, env, failures)
+        check_image(repo, "ci", {"ci"}, packages, env, failures)
 
         check_release_flow(repo, dest, failures)
 
@@ -239,13 +253,14 @@ def verify_docker(repo: str, dest: str, source: str, failures: list[str]) -> Non
         expected = {"latest", version, f"{major}.{minor}"}
         if major != "0":
             expected.add(major)
-        check_image(repo, version, expected, env, failures)
+        check_image(repo, version, expected, packages, env, failures)
         check_entrypoint(repo, version, env, failures)
-    say(f"Package: https://github.com/users/{owner}/packages/container/{package}")
+    account = "users" if owner == login else "orgs"
+    say(f"Package: https://github.com/{account}/{owner}/packages/container/{package}")
 
 
-def cleanup(owner: str, repo_prefix: str, *, yes: bool) -> None:
-    """Delete every test repo main() created, its package, and its local clone.
+def cleanup(owner: str, login: str, repo_prefix: str, *, yes: bool) -> None:
+    """Delete every test repo main() created under `owner`, its package, and clone.
 
     It finds them by name, so it covers runs that stopped partway. Deleting a repo
     doesn't delete its package, so this deletes both. It lists everything, then asks.
@@ -265,10 +280,11 @@ def cleanup(owner: str, repo_prefix: str, *, yes: bool) -> None:
         gh_value("repo", "list", owner, "--limit", "1000", "--json", "name")
     )
     names = sorted(r["name"] for r in repos if pattern.fullmatch(r["name"]))
-    packages = json.loads(
-        gh_value("api", "--paginate", "user/packages?package_type=container") or "[]"
+    packages = packages_api(owner, login)
+    found = json.loads(
+        gh_value("api", "--paginate", f"{packages}?package_type=container") or "[]"
     )
-    package_names = sorted(p["name"] for p in packages if pattern.fullmatch(p["name"]))
+    package_names = sorted(p["name"] for p in found if pattern.fullmatch(p["name"]))
     clones = local_clones(pattern, "github.com")
     if not names and not package_names and not clones:
         say(f"No Docker integration-test repos, packages, or clones under {owner}.")
@@ -284,7 +300,7 @@ def cleanup(owner: str, repo_prefix: str, *, yes: bool) -> None:
         say("Nothing deleted.")
         return
     for name in package_names:
-        run("gh", "api", "-X", "DELETE", f"user/packages/container/{name}")
+        run("gh", "api", "-X", "DELETE", f"{packages}/container/{name}")
     for name in names:
         run("gh", "repo", "delete", f"{owner}/{name}", "--yes")
     deleted = remove_clones(clones)
@@ -308,6 +324,14 @@ def main() -> None:
     parser.add_argument("--source", help="Copier template source URL")
     parser.add_argument("--repo-prefix", required=True, help="This repo's own name")
     parser.add_argument(
+        "--owner",
+        default=os.environ.get("usage_owner"),
+        help=(
+            "User or organization to create the test repo under, and for --cleanup to "
+            "delete from. Defaults to the account gh is logged in as."
+        ),
+    )
+    parser.add_argument(
         "--cleanup",
         action="store_true",
         help="Skip creating a repo; delete every repo and package a run made.",
@@ -321,14 +345,15 @@ def main() -> None:
 
     if args.cleanup:
         check_gh_installed()
-        owner = gh_value("api", "user", "--jq", ".login")
-        cleanup(owner, args.repo_prefix, yes=args.yes)
+        login = gh_value("api", "user", "--jq", ".login")
+        cleanup(args.owner or login, login, args.repo_prefix, yes=args.yes)
         return
     if not args.source:
         raise SystemExit("--source is required.")
     check_prerequisites()
 
-    owner = gh_value("api", "user", "--jq", ".login")
+    login = gh_value("api", "user", "--jq", ".login")
+    owner = args.owner or login
     repo_name = f"{args.repo_prefix}-integration-test-docker-{int(time.time())}"
     repo = f"{owner}/{repo_name}"
     dest = local_clone_dir(repo_name)
@@ -343,6 +368,7 @@ def main() -> None:
         repo_name,
         dest,
         owner,
+        login,
         "GitHub Pages",
         code_coverage=False,
         leaf=True,
@@ -350,7 +376,7 @@ def main() -> None:
     step("Setting test secrets")
     provision_test_secrets(repo)
     failures: list[str] = []
-    verify_docker(repo, dest, args.source, failures)
+    verify_docker(repo, login, dest, args.source, failures)
     summary(
         [
             RepoResult(

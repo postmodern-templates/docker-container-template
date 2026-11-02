@@ -85,6 +85,10 @@ run = "uv run scripts/template_docs_server.py"
 # for inspection; delete them with `mise run integration-test-cleanup-gh`. See
 # https://postmodern-templates.github.io/docker-container-template/latest/maintaining/integration-testing/index.html and
 # https://postmodern-templates.github.io/docker-container-template/latest/maintaining/integration-testing/runbook-github/.
+# The repos go under this repo's owner; pass --owner for another user or organization.
+usage = '''
+flag "--owner <owner>" help="User or organization for the test repos" default="postmodern-templates"
+'''
 run = "python scripts/integration_test_github.py --source https://github.com/postmodern-templates/docker-container-template --repo-prefix docker-container-template"
 
 [tasks.integration-test-verify-update-gh]
@@ -101,7 +105,10 @@ run = "python scripts/integration_test_github.py --verify-update --repo-prefix d
 
 [tasks.integration-test-cleanup-gh]
 # Deletes every repo integration-test-gh created, including those of a run that
-# stopped partway, after listing them and asking.
+# stopped partway, after listing them and asking. Pass the same --owner as that run.
+usage = '''
+flag "--owner <owner>" help="User or organization for the test repos" default="postmodern-templates"
+'''
 run = "python scripts/integration_test_github.py --cleanup --repo-prefix docker-container-template"
 
 [tasks.integration-test-docker]
@@ -109,11 +116,19 @@ run = "python scripts/integration_test_github.py --cleanup --repo-prefix docker-
 # from this template, publishes its CI and release images, and runs the release image.
 # The repo and package stay for inspection; delete them with
 # `mise run integration-test-docker-cleanup`.
+# The repo goes under this repo's owner; pass --owner for another user or organization.
+usage = '''
+flag "--owner <owner>" help="User or organization for the test repo" default="postmodern-templates"
+'''
 run = "python scripts/integration_test_docker.py --source https://github.com/postmodern-templates/docker-container-template --repo-prefix docker-container-template"
 
 [tasks.integration-test-docker-cleanup]
 # Deletes every repo and package integration-test-docker created, including those of a
-# run that stopped partway, after listing them and asking.
+# run that stopped partway, after listing them and asking. Pass the same --owner as that
+# run.
+usage = '''
+flag "--owner <owner>" help="User or organization for the test repo" default="postmodern-templates"
+'''
 run = "python scripts/integration_test_docker.py --cleanup --repo-prefix docker-container-template"
 
 [tasks.integration-test-azdo]

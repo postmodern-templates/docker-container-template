@@ -11,6 +11,17 @@
 
 <div align="center">
   <img src="docs/assets/images/readme-logo.png" alt="Logo" width="160" height="160">
+{%- if lifecycle_is_pre_stable %}
+
+  <!-- Don't edit/remove this yourself! This is managed by the 'lifecycle' Copier answer. -->
+
+  <table align="center"><tr><td>❗ Notice: This project is in a {{ lifecycle }} state and {% if lifecycle == "Pre-Alpha" or lifecycle == "Alpha" %}is not ready for public use{% else %}should be used with caution{% endif %}.</td></tr></table>
+{%- elif lifecycle == "Inactive" %}
+
+  <!-- Don't edit/remove this yourself! This is managed by the 'lifecycle' Copier answer. -->
+
+  <table align="center"><tr><td>⚡ Notice: This project is no longer under active development.</td></tr></table>
+{%- endif %}
 
   <h3 align="center">{{ project_name }}</h3>
 
@@ -22,19 +33,6 @@
 <p align="center">
   <img src="docs/assets/images/readme-screenshot.png" alt="Screenshot">
 </p>
-{%- if lifecycle_is_pre_stable %}
-
-<!-- Don't edit/remove this yourself! This is managed by the 'lifecycle' Copier answer. -->
-
-| :exclamation: Notice: This project is in a {{ lifecycle }} state and {% if lifecycle == "Pre-Alpha" or lifecycle == "Alpha" %}is not ready for public use{% else %}should be used with caution{% endif %}. |
-| ------------------------------------------------------------------------------------ |
-{%- elif lifecycle == "Inactive" %}
-
-| :zap: Notice: This project is no longer under active development. |
-| ----------------------------------------------------------------- |
-{%- endif %}
-
-Describe your project here.
 
 ## Documentation
 {%- if zensical_ghpages %}

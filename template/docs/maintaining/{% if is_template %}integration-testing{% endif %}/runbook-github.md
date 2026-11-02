@@ -12,8 +12,9 @@ for `<repo-a-path>` and `<repo-b-path>`. Each entry's **Web** link opens that re
 
 ## Before You Start
 
-- [ ] The GitHub [Prerequisites](../../getting-started/prerequisites.md) are in place for your
-  account: all four GitHub apps, including the optional ones, each with access to all
+- [ ] The GitHub [Prerequisites](../../getting-started/prerequisites.md) are in place for the
+  account that will own the test repos, which is this repo's owner unless you pass `--owner`
+  below: all four GitHub apps, including the optional ones, each with access to all
   repositories, since the test repos are public with `code_coverage` on; and the GitHub CLI,
   logged in, with Git authentication set up.
 - [ ] Give the GitHub CLI the scopes the run and its cleanup need:
@@ -22,7 +23,7 @@ for `<repo-a-path>` and `<repo-b-path>`. Each entry's **Web** link opens that re
     gh auth refresh -h github.com -s repo,workflow,delete_repo,read:packages,delete:packages
     ```
 
-- [ ] Set the `CODECOV_TOKEN` environment variable to your Codecov account's global upload
+- [ ] Set the `CODECOV_TOKEN` environment variable to that account's global Codecov upload
   token, which the run stores as Repo A's secret; a new repo has no per-repo token yet. The
   run requires it, and stops before creating anything without it.
 
@@ -34,6 +35,9 @@ for `<repo-a-path>` and `<repo-b-path>`. Each entry's **Web** link opens that re
     cd <template-repo-path>
     mise run integration-test-gh
     ```
+
+    To create the repos under another user or organization you can create repos in, add
+    `--owner <user-or-org>`.
 
 - [ ] When it finishes, its summary says "all checks passed" for both repos. If a check failed,
   find out why in the run's log directory, which the run prints at its start and end:
@@ -227,6 +231,9 @@ build attestations; and the release image runs, its entrypoint mapping `HOST_UID
     mise run integration-test-docker
     ```
 
+    To create the repo under another user or organization you can create repos in, add
+    `--owner <user-or-org>`.
+
 - [ ] When it finishes, its summary says "all checks passed". If a check failed, find out why in
   `<template-repo-path>/.cache/integration-test/<timestamp>-docker/`, fix the cause, clean up
   (see [Cleaning Up](#cleaning-up)), and start again.
@@ -240,8 +247,9 @@ build attestations; and the release image runs, its entrypoint mapping `HOST_UID
     mise run integration-test-cleanup-gh
     ```
 
-    It deletes every integration-test repo under your account, and their local clones,
-    including any left by a run that stopped partway.
+    It deletes every integration-test repo under this repo's owner, and their local clones,
+    including any left by a run that stopped partway. If the run used `--owner`, add the same
+    `--owner <user-or-org>` here.
 
 - [ ] Delete the Docker repo and its package, and confirm when it asks:
 
@@ -249,3 +257,5 @@ build attestations; and the release image runs, its entrypoint mapping `HOST_UID
     cd <template-repo-path>
     mise run integration-test-docker-cleanup
     ```
+
+    If the run used `--owner`, add the same `--owner <user-or-org>` here.

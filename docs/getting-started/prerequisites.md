@@ -81,8 +81,13 @@
     1. Install its Azure DevOps extension and log in:
         ```
         az extension add --name azure-devops
-        az login
+        az login --allow-no-subscriptions --use-device-code
         ```
     1. Install [Git Credential Manager](https://github.com/git-ecosystem/git-credential-manager) to
        authenticate Git over HTTPS. Git for Windows includes it; on macOS and Linux, install it
        separately.
+    1. Sign Git in to your organization, replacing both `<org>`s, and enter the code it prints at
+       the page it names. Git Credential Manager keeps its own sign-in, separate from `az login`:
+        ```
+        echo url=https://<org>@dev.azure.com/<org>/ | git -c credential.msauthFlow=devicecode credential fill | git credential approve
+        ```

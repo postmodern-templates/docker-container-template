@@ -17,7 +17,7 @@ repos go in.
 
 - [ ] The Azure DevOps [Prerequisites](../../getting-started/prerequisites.md) are in place for
   `<project>`: the project settings, the build service permissions, and the Azure CLI with its
-  Azure DevOps extension, logged in.
+  Azure DevOps extension, logged in, and Git signed in to `<org>`.
 - [ ] A GitHub token is available: log in with `gh auth login`, or set the `GITHUB_COM_TOKEN`
   environment variable to a GitHub token with no scopes. The run sets it on every pipeline, for
   mise's tool downloads and Renovate's lookups on github.com, and stops before creating anything

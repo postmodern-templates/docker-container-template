@@ -23,7 +23,7 @@ Make one decision before you use this template:
 
 ## Inheritance
 
-This template was built from [Postmodern Repo Copier Template](https://github.com/natescherer/postmodern-repo-copiertemplate), and the
+This template was built from [Postmodern Repo Template](https://github.com/postmodern-templates/repo-template), and the
 projects and child templates it generates inherit from it the same way. `copier update` carries that inheritance: run
 against a generated project, it brings in what changed upstream (features, fixes, security
 patches) and keeps local customizations.

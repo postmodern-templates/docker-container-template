@@ -10,17 +10,16 @@
 <div align="center">
   <img src="docs/assets/images/readme-logo.png" alt="Logo" width="160" height="160">
 
+  <!-- Don't edit/remove this yourself! This is managed by the 'lifecycle' Copier answer. -->
+
+  <table align="center"><tr><td>❗ Notice: This project is in a Pre-Alpha state and is not ready for public use.</td></tr></table>
+
   <h3 align="center">Postmodern Docker Container Template</h3>
 
   <p align="center">
     A Copier template to build and publish a Docker container with the hard/boring stuff automated, so you can get back to coding.
   </p>
 </div>
-
-<!-- Don't edit/remove this yourself! This is managed by the 'lifecycle' Copier answer. -->
-
-| :exclamation: Notice: This project is in a Pre-Alpha state and is not ready for public use. |
-| ------------------------------------------------------------------------------------ |
 
 ## What kind of repo does it make?
 
