@@ -1856,7 +1856,9 @@ current content, left no conflict markers, and applied <code>.github/settings.ym
 projects, which don't render the Docker workflows, so this one has its own run.</p>
 <p><em>Automated: a merge under <code>src/</code> publishes the <code>ci</code> image; a release dispatches Docker (Auto):
 Publish Release Image, which publishes <code>latest</code> and the version tags; both images have valid
-build attestations; and the release image runs, its entrypoint mapping <code>HOST_UID</code> and <code>HOST_GID</code>.</em></p>
+build attestations; and the release image runs as non-root by default, runs hardened under
+<code>docker run --user</code>, maps <code>HOST_UID</code> and <code>HOST_GID</code> under <code>--user 0</code>, and passes on
+<code>docker stop</code>'s signal.</em></p>
 <ul class="task-list">
 <li class="task-list-item">
 <p><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Confirm the Docker daemon is running; this prints a <code>Server</code> section:</p>

@@ -1132,6 +1132,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#container-user-and-bind-mounts" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Container User and Bind Mounts
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#editor-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -1494,6 +1505,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#container-user-and-bind-mounts" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Container User and Bind Mounts
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#editor-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -1696,6 +1718,35 @@
 <li>Python linting and formatting via Ruff for the template's own scripts and tests</li>
 <li>On every <code>copier update</code>, any parent template change worth releasing is turned into a Knope changeset, so it reaches your own changelog and version bump instead of disappearing into a single update commit</li>
 </ul>
+<h2 id="container-user-and-bind-mounts">Container User and Bind Mounts<a class="headerlink" href="#container-user-and-bind-mounts" title="Permanent link">&para;</a></h2>
+<p>The image runs as a non-root user, UID and GID 1000. Files it writes to a bind mount keep those
+IDs, so they match your own only if your host user is also 1000. Otherwise, pick one:</p>
+<ul>
+<li>
+<p><strong>Run as your own IDs</strong>, which also works with <code>--read-only</code> and <code>--cap-drop=ALL</code>. The IDs
+  have no user name inside the container, so anything that looks one up fails:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>docker<span class="w"> </span>run<span class="w"> </span>--user<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>id<span class="w"> </span>-u<span class="k">)</span><span class="s2">:</span><span class="k">$(</span>id<span class="w"> </span>-g<span class="k">)</span><span class="s2">"</span><span class="w"> </span>-v<span class="w"> </span><span class="s2">"</span><span class="nv">$PWD</span><span class="s2">:/data"</span><span class="w"> </span>&lt;image&gt;
+</span></code></pre></div>
+</li>
+<li>
+<p><strong>Give the image's user your IDs</strong>, so it keeps its name and home directory. This starts as
+  root and drops privileges, so it needs default capabilities and a writable root filesystem:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>docker<span class="w"> </span>run<span class="w"> </span>--user<span class="w"> </span><span class="m">0</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">HOST_UID</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>id<span class="w"> </span>-u<span class="k">)</span><span class="s2">"</span><span class="w"> </span>-e<span class="w"> </span><span class="nv">HOST_GID</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>id<span class="w"> </span>-g<span class="k">)</span><span class="s2">"</span><span class="w"> </span>-v<span class="w"> </span><span class="s2">"</span><span class="nv">$PWD</span><span class="s2">:/data"</span><span class="w"> </span>&lt;image&gt;
+</span></code></pre></div>
+</li>
+</ul>
+<p>In Docker Compose, set the first form with <code>user</code>, then start it with
+<code>HOST_UID="$(id -u)" HOST_GID="$(id -g)" docker compose up</code>:</p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">services</span><span class="p">:</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">app</span><span class="p">:</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;image&gt;</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="s">"${HOST_UID:-1000}:${HOST_GID:-1000}"</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.:/data</span>
+</span></code></pre></div>
+<p>Install packages in <code>src/Dockerfile</code> before its <code>USER</code> line. For an app that starts child
+processes, add <code>--init</code> to <code>docker run</code> (<code>init: true</code> in Compose), so they get reaped and
+signals reach them.</p>
 <h2 id="editor-configuration">Editor Configuration<a class="headerlink" href="#editor-configuration" title="Permanent link">&para;</a></h2>
 <p><a href="https://code.visualstudio.com/">Visual Studio Code</a> settings and extension recommendations are included.</p>
 
