@@ -1735,6 +1735,14 @@ IDs, so they match your own only if your host user is also 1000. Otherwise, pick
 </span></code></pre></div>
 </li>
 </ul>
+<div class="admonition warning">
+<p class="admonition-title">Limits of giving the image's user your IDs</p>
+<p>This form changes the user's UID with <code>usermod</code>, which also re-owns everything under the home
+directory that the old UID owned. That includes bind mounts there, such as <code>/home/app/data</code>,
+and the host files stay re-owned after the container exits, so mount them elsewhere, as <code>/data</code>
+does above. The command also can't open <code>/dev/stdout</code> or <code>/dev/stderr</code> by path, so an app that
+logs that way needs the first form.</p>
+</div>
 <p>In Docker Compose, set the first form with <code>user</code>, then start it with
 <code>HOST_UID="$(id -u)" HOST_GID="$(id -g)" docker compose up</code>:</p>
 <div class="language-yaml highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">services</span><span class="p">:</span>
